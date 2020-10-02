@@ -1,5 +1,5 @@
 # Social Media Analysis mit R
-Einführung in die Social Media Analyse mit R
+Einführung in die Social Media Analysis mit R
 
 # Autoren
 Prof. Dr. Dennis Klinkhammer
