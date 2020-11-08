@@ -2,10 +2,14 @@
 # #############################################################
 
 # PACKAGES LADEN
-require("plyr")
-require("vosonSML")
-require("magrittr")
-require("stringr")
+install.packages("plyr", dependencies=TRUE)
+library(plyr)
+install.packages("vosonSML", dependencies=TRUE)
+library(vosonSML)
+install.packages("magrittr", dependencies=TRUE)
+library(magrittr)
+install.packages("stringr", dependencies=TRUE)
+library(stringr)
 
 # YOUTUBE DEVELOPER ZUGANG
 my_apiKeyYoutube<-"HIER APPLICATION PROGRAMMING INTERFACE EINTRAGEN"
@@ -19,7 +23,7 @@ videoIDs=c("HIER KENNUNG DES YOUTUBE-VIDEOS EINTRAGEN")
 # #############################################################
 
 # AUSWAHL ALS OBJEKT SPEICHERN
-myYoutubeData<-Collect(apiKeyYoutube,videoIDs, writeToFile=TRUE,verbose=TRUE,maxComments=50)
+myYoutubeData<-Collect(apiKeyYoutube,videoIDs, writeToFile=TRUE,verbose=TRUE,maxComments=200)
 
 # OBJEKT ANSEHEN
 str(myYoutubeData)
@@ -28,13 +32,13 @@ str(myYoutubeData)
 
 # DATEN VEREINFACHEN
 easy_dataset <- data.frame(myYoutubeData$AuthorDisplayName, myYoutubeData$Comment, myYoutubeData$ReplyCount, myYoutubeData$LikeCount)
-colnames(easy_dataset) <- c("author", "words", "reply", "like")
+colnames(easy_dataset) <- c("author", "words", "replies", "likse")
 
 # #############################################################
 
 # DATEN NUMERISCH HINTERLEGEN
-easy_dataset$like <- as.numeric(as.character(easy_dataset$like))
-easy_dataset$reply <- as.numeric(as.character(easy_dataset$reply))
+easy_dataset$likes <- as.numeric(as.character(easy_dataset$likes))
+easy_dataset$replies <- as.numeric(as.character(easy_dataset$replies))
 easy_dataset$words <- as.character(easy_dataset$words)
 easy_dataset$author <- as.character(easy_dataset$author)
 
@@ -61,6 +65,7 @@ easy_dataset <- ddply(easy_dataset,"easy_dataset$author",numcolwise(sum))
 
 # ANZAHL AN KOMMENTAREN ALS NEUE VARIABLE HINZUFÜGEN
 easy_dataset$comments <- comments
+colnames(easy_dataset) <- c("author", "replies", "likes", "words", "comments")
 
 # #############################################################
 
@@ -69,15 +74,15 @@ summary(easy_dataset)
 # #############################################################
 
 # NUTZERAUSWAHL NACH DESKRIPTIVEN MERKMALEN
-identification <- subset(easy_dataset, words>="5" & reply>="1" & like>="1" & comments>="2")
+identification <- subset(easy_dataset, words>="5" & replies>="2" & likes>="2" & comments>="2")
 
 # RANKING NACH AKTIVITÄT
 most_words <- easy_dataset[order(-easy_dataset$words),]
 head(most_words)
-most_reply <- easy_dataset[order(-easy_dataset$reply),]
-head(most_reply)
-most_like <- easy_dataset[order(-easy_dataset$like),]
-head(most_like)
+most_replies <- easy_dataset[order(-easy_dataset$replies),]
+head(most_replies)
+most_likes <- easy_dataset[order(-easy_dataset$likes),]
+head(most_likes)
 most_comments <- easy_dataset[order(-easy_dataset$comments),]
 head(most_comments)
 
@@ -87,18 +92,18 @@ subset(myYoutubeData[c(1:2)], AuthorDisplayName=="HIER ZU ANALYSIERENDE PERSON E
 # #############################################################
 
 # BINÄRE ZIELVARIABLE ERSTELLEN
-easy_dataset$relevant <- ifelse(easy_dataset$words>=5 & easy_dataset$reply>=1 & easy_dataset$like>=1 & easy_dataset$comment>=2, 1,0)
+easy_dataset$relevant <- ifelse(easy_dataset$words>=5 & easy_dataset$replies>=1 & easy_dataset$likes>=1 & easy_dataset$comment>=2, 1,0)
 
 # RESTLICHEN DATENSATZ DICHOTIMISIEREN
 
 easy_dataset$words <- ifelse(easy_dataset$words>=5,1,0)
-easy_dataset$reply <- ifelse(easy_dataset$reply>=1,1,0)
-easy_dataset$like <- ifelse(easy_dataset$like>=1,1,0)
+easy_dataset$replies <- ifelse(easy_dataset$replies>=1,1,0)
+easy_dataset$likes <- ifelse(easy_dataset$likes>=1,1,0)
 easy_dataset$comments <- ifelse(easy_dataset$comments>2,1,0)
 
 # #############################################################
 
-glm(data=easy_dataset, relevant~words+reply+like+comments, family=binomial())
+glm(data=easy_dataset, relevant~words+replies+likes+comments, family=binomial())
 
 # #############################################################
 
