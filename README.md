@@ -1,4 +1,4 @@
-# Social Media Analysis mit R
+# Social Media Analysis
 Programmierbeispiele zur Einführung in die Social Media Analysis mit R
 
 # Autoren
