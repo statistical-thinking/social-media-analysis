@@ -6,4 +6,4 @@ Prof. Dr. Dennis Klinkhammer
 
 # Voraussetzungen
 Folgende Packages sollten in R installiert sein:<br>
-plyr; vosonSML; magritte; stringr; tm; wordcloud; RColorBrewer
+plyr; vosonSML; magrittr; stringr; tm; wordcloud; RColorBrewer
